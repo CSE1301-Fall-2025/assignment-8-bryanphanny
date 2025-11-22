@@ -2,6 +2,7 @@ package assignment8;
 
 import edu.princeton.cs.introcs.StdDraw;
 import support.cse131.NotYetImplementedException;
+import java.awt.Color;
 
 public class Nonzombie extends Entity {
 
@@ -14,7 +15,7 @@ public class Nonzombie extends Entity {
 	 */
 	public Nonzombie(double x, double y) {
 		// FIXME
-		throw new NotYetImplementedException();
+		super(x, y, false, NONZOMBIE_SPEED);
 	}
 	
 	/**
@@ -22,17 +23,20 @@ public class Nonzombie extends Entity {
 	 * @return the new Zombie object
 	 */
 	public Zombie convert() {
-		// FIXME
-		throw new NotYetImplementedException();
+		this.wasConsumed();
+		Zombie newZombie = new Zombie(this.getX(), this.getY());
+		return newZombie;
 	}
 	
 	/**
 	 * Draw a Nonzombie
 	 */
 	public void draw() {
-		// FIXME
-		throw new NotYetImplementedException();
+		if (this.isAlive()) {
+			StdDraw.setPenColor(Color.PINK);
+			StdDraw.filledCircle(this.getX(), this.getY(), this.getRadius());
 
+		}
 	}
 
 	/**
@@ -41,9 +45,32 @@ public class Nonzombie extends Entity {
 	 * @return the new Entity object to take the place of the current one
 	 */
 	public Entity update(Entity[] entities) {
-		// FIXME
-		throw new NotYetImplementedException();
-
+		if (!this.isAlive()) {
+			return this;
+		}
+		
+		Entity closest = this.findClosestEntity(entities);
+		double zombieThreshold = 0.80;
+		if (closest != null) {
+			if (closest.isZombie()) {
+				Zombie closestZombie = (Zombie)closest;
+				this.moveAwayFrom(closestZombie);
+				if (this.isTouching(closestZombie)) {
+					if (Math.random() < zombieThreshold) {
+						return this.convert();
+					}
+					else {
+						this.wasConsumed();
+						closestZombie.consumeNonzombie();
+					}
+				}
+			}
+			else {
+				this.moveToward(closest);
+			}
+		}
+		this.checkBounds();
+		return this;
 	}
 
 

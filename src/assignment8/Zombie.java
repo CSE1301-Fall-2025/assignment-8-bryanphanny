@@ -2,6 +2,7 @@ package assignment8;
 
 import edu.princeton.cs.introcs.StdDraw;
 import support.cse131.NotYetImplementedException;
+import java.awt.Color;
 
 public class Zombie extends Entity {
 
@@ -14,7 +15,7 @@ public class Zombie extends Entity {
 	 */
 	public Zombie(double x, double y){
 		// FIXME
-		throw new NotYetImplementedException();
+		super(x, y, true, ZOMBIE_SPEED);
 	}
 
 	/**
@@ -22,7 +23,15 @@ public class Zombie extends Entity {
 	 */
 	public void consumeNonzombie(){
 		// FIXME
-		throw new NotYetImplementedException();
+		if (this.getRadius() < 0.02) {
+			double newRadius = (this.getRadius() * 0.2) + this.getRadius();
+			if (newRadius <= 0.02) {
+				this.setRadius(newRadius);
+			}
+			else {
+				this.setRadius(0.02);
+			}
+		}
 	}
 
 	/**
@@ -30,7 +39,8 @@ public class Zombie extends Entity {
 	 */
 	public void draw() {
 		// FIXME
-		throw new NotYetImplementedException();
+		StdDraw.setPenColor(Color.GREEN);
+		StdDraw.filledCircle(this.getX(), this.getY(), this.getRadius());
 	}
 
 
@@ -40,7 +50,11 @@ public class Zombie extends Entity {
 	 * @return the new Entity object to take the place of the current one
 	 */
 	public Entity update(Entity[] entities) {
-		// FIXME
-		throw new NotYetImplementedException();
+		Nonzombie closest = this.findClosestNonzombie(entities);
+		if (closest != null) {
+			this.moveToward(closest);
+		}
+		this.checkBounds();
+		return this;
 	}
 }

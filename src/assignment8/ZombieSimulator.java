@@ -15,14 +15,14 @@ import support.cse131.Timing;
  */
 public class ZombieSimulator {
 	private static final String ZOMBIE_TOKEN_VALUE = "Zombie";
+	private Entity[] simulator;
 
 
 	/**
 	 * Constructs a ZombieSimulator with an empty array of Entities.
 	 */
 	public ZombieSimulator(int n) {
-		// FIXME
-		throw new NotYetImplementedException();
+		this.simulator = new Entity[n];
 	}
 
 	/**
@@ -30,7 +30,7 @@ public class ZombieSimulator {
 	 */
 	public Entity[] getEntities() {
 		// FIXME
-		throw new NotYetImplementedException();
+		return this.simulator;
 	}
 
 	/** 
@@ -44,7 +44,20 @@ public class ZombieSimulator {
 	 */
 	public void readEntities(Scanner in) {
 		// FIXME
-		throw new NotYetImplementedException();
+		for (int i = 0; i < this.simulator.length; i++) {
+			String entity = in.next();
+			double x = in.nextDouble();
+			double y = in.nextDouble();
+
+			Entity entityToPlace = null;
+			if (entity.equals(ZOMBIE_TOKEN_VALUE)) {
+				entityToPlace = new Zombie(x, y);
+			}
+			else {
+				entityToPlace = new Nonzombie(x, y);
+			}
+			this.simulator[i] = entityToPlace;
+		}
 	}
 
 	/**
@@ -52,15 +65,26 @@ public class ZombieSimulator {
 	 */
 	public int getZombieCount() {
 		// FIXME
-		throw new NotYetImplementedException();
+		int zombieCount = 0;
+		for (Entity entity : this.simulator) {
+			if (entity != null && entity.isAlive() && entity.isZombie()) {
+				zombieCount++;
+			}
+		}
+		return zombieCount;
 	}
 
 	/**
 	 * @return the number of nonzombies in entities.
 	 */
 	public int getNonzombieCount() {
-		// FIXME
-		throw new NotYetImplementedException();
+		int nonZombieCount = 0;
+		for (Entity entity : this.simulator) {
+			if (entity != null && entity.isAlive() && !entity.isZombie()) {
+				nonZombieCount++;
+			}
+		}
+		return nonZombieCount;
 	}
 
 	/**
@@ -87,7 +111,13 @@ public class ZombieSimulator {
 	 */
 	public void update() {
 		// FIXME
-		throw new NotYetImplementedException();
+		for (int i = 0; i < this.simulator.length; i ++) {
+			Entity currentEntity = this.simulator[i];
+			if (currentEntity != null && currentEntity.isAlive()) {
+				Entity returnedEntity = currentEntity.update(this.simulator);
+				this.simulator[i] = returnedEntity;
+			}
+		}	
 	}
 
 	/**

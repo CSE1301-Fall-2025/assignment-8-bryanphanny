@@ -5,8 +5,10 @@ import java.awt.Color;
 import edu.princeton.cs.introcs.StdDraw;
 import support.cse131.NotYetImplementedException;
 
+
 public class Entity {
-	private double x, y, speed;
+	private double x, y, speed, radius;
+	private boolean isZombie, isAlive;
 
 	/*
 	 * Default constructor - should not be used
@@ -15,6 +17,7 @@ public class Entity {
 		this.x = 0;
 		this.y = 0;
 		this.speed = 0;
+		this.isAlive = true;
 	}
 	
 	/**
@@ -26,7 +29,13 @@ public class Entity {
 	 */
 	public Entity(double x, double y, boolean isZombie, double speed) {
 		// TODO
-		throw new NotYetImplementedException();
+		this.x = x;
+		this.y = y;
+		this.isZombie = isZombie;
+		this.speed = speed;
+		this.radius = 0.008; //Placeholder initial value
+		this.isAlive = true;
+		
 	}
 
 	/**
@@ -34,7 +43,7 @@ public class Entity {
 	 */
 	public double getX() {
 		// FIXME
-		throw new NotYetImplementedException();
+		return this.x;
 	}
 
 	/**
@@ -42,7 +51,7 @@ public class Entity {
 	 */
 	public double getY() {
 		// FIXME
-		throw new NotYetImplementedException();
+		return this.y;
 	}
 
 	/**
@@ -51,13 +60,13 @@ public class Entity {
 	 */
 	public double getRadius() {
 		// FIXME
-		throw new NotYetImplementedException();
+		return this.radius;
 	}
 	
 	
     public void setRadius(double d) {
     	//FIXME
-		throw new NotYetImplementedException();
+		this.radius = d;
 	}
 
 	/**
@@ -66,7 +75,7 @@ public class Entity {
 	 */
 	public boolean isAlive() {
 		// FIXME
-		throw new NotYetImplementedException();
+		return this.isAlive;
 	}
 
 	/**
@@ -74,7 +83,7 @@ public class Entity {
 	 */
 	public void wasConsumed(){
 		// FIXME
-		throw new NotYetImplementedException();
+		this.isAlive = false;
 	}
 
 	/**
@@ -83,7 +92,7 @@ public class Entity {
 	 */
 	public boolean isZombie() {
 		//FIXME
-		throw new NotYetImplementedException();
+		return this.isZombie;
 	}
 
 
@@ -93,8 +102,12 @@ public class Entity {
 	 * @return distance between this Entity's center and the specified other point.
 	 */
 	public double distanceCenterToPoint(double xOther, double yOther) {
-		// FIXME
-		throw new NotYetImplementedException();
+		double xDistance = this.x - xOther;
+		double yDistance = this.y - yOther;
+		double xSquared = xDistance * xDistance;
+		double ySquared = yDistance * yDistance;
+		double distance = Math.sqrt(xSquared+ySquared);
+		return distance;
 	}
 
 	/**
@@ -115,7 +128,7 @@ public class Entity {
 	 */
 	public double distanceEdgeToEdge(double xOther, double yOther, double radiusOther) {
 		// FIXME
-		throw new NotYetImplementedException();
+		return distanceCenterToPoint(xOther, yOther) - radiusOther - this.radius;
 	}
 
 	/**
@@ -136,7 +149,10 @@ public class Entity {
 	 */
 	public boolean isTouching(double xOther, double yOther, double radiusOther) {
 		// FIXME
-		throw new NotYetImplementedException();
+		if (this.distanceCenterToPoint(xOther, yOther) < (radiusOther + this.radius)) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -177,8 +193,14 @@ public class Entity {
 	 * @param yOther y-coordinate of the other point.
 	 */
 	public void moveAwayFrom(double xOther, double yOther) {
-		// FIXME
-		throw new NotYetImplementedException();
+		double xVector = xOther - getX();
+		double yVector = yOther - getY();
+		double angle = Math.atan2(yVector, xVector);
+		double xAmount = this.speed * Math.cos(angle);
+		double yAmount = this.speed * Math.sin(angle);
+		
+		this.x -= xAmount;
+		this.y -= yAmount;
 	}
 
 	/**
@@ -247,7 +269,18 @@ public class Entity {
 	 * If the entity has moved out of bounds, returns it inbounds
 	 */
 	public void checkBounds() {
-		//FIXME
+		if (this.x > 1) {
+			this.x = 1;
+		}
+		if (this.x < 0) {
+			this.x = 0;
+		}
+		if (this.y > 1) {
+			this.y = 1;
+		}
+		if (this.y < 0) {
+			this.y = 0;
+		}
 	}
 	
 	/**
